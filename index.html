@@ -219,6 +219,22 @@
         .saved-item:hover .si-del{opacity:1}
         .saved-item .si-del:hover{color:#ef4444;background:rgba(239,68,68,.1)}
         .saved-empty{font-size:.78rem;color:var(--fg3);padding:.5rem 0;font-style:italic}
+        .music-api-card{display:flex;flex-direction:column;gap:.65rem;padding:.85rem;background:var(--bg-card);border:1px solid var(--border);border-radius:12px}
+        .music-api-title{display:flex;align-items:center;justify-content:space-between;gap:.75rem;font-family:'Space Grotesk',sans-serif;font-size:.82rem;font-weight:700}
+        .music-api-status{font-size:.72rem;color:var(--fg3);line-height:1.45}
+        .music-api-status.connected{color:var(--accent-h)}
+        .music-api-actions{display:flex;gap:.45rem;flex-wrap:wrap}
+        .music-mini-btn{padding:.5rem .65rem;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--fg2);font-family:inherit;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .2s}
+        .music-mini-btn:hover{border-color:var(--border-h);color:var(--fg);background:var(--accent-g)}
+        .music-mini-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+        .music-mini-btn.danger:hover{border-color:rgba(239,68,68,.35);color:#ef4444;background:rgba(239,68,68,.08)}
+        .music-api-results{display:flex;flex-direction:column;gap:.35rem;max-height:220px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+        .music-api-result{display:flex;align-items:center;gap:.6rem;padding:.55rem .65rem;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.015);cursor:pointer;transition:all .2s}
+        .music-api-result:hover{border-color:var(--border-h);background:var(--accent-g)}
+        .music-api-art{width:34px;height:34px;border-radius:7px;background:var(--accent-g);object-fit:cover;flex-shrink:0;border:1px solid var(--border)}
+        .music-api-copy{min-width:0;flex:1}
+        .music-api-name{font-family:'Space Grotesk',sans-serif;font-size:.78rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--fg)}
+        .music-api-meta{font-size:.63rem;color:var(--fg3);text-transform:uppercase;letter-spacing:.04em}
 
         .settings-overlay{position:fixed;inset:0;z-index:200;pointer-events:none;opacity:0;transition:opacity .35s}
         .settings-overlay.open{pointer-events:all;opacity:1}
@@ -423,6 +439,7 @@
             </div>
             <div class="music-tabs">
                 <button class="music-tab active" onclick="switchMusicTab('spotify',this)">Spotify</button>
+                <button class="music-tab" onclick="switchMusicTab('youtube',this)">YouTube Music</button>
                 <button class="music-tab" onclick="switchMusicTab('soundcloud',this)">Soundcloud</button>
                 <button class="music-tab" onclick="switchMusicTab('saved',this)">My Lists</button>
             </div>
@@ -446,9 +463,49 @@
                         <button class="music-preset" onclick="loadSpotifyPreset('37i9dQZF1DX0XUsuxKHRJY','playlist','Rock Classics')">Rock Classics</button>
                         <button class="music-preset" onclick="loadSpotifyPreset('37i9dQZF1DWWQRwui0ExPn','playlist','lol shuffle')">lol shuffle</button>
                     </div>
+                    <div class="music-api-card">
+                        <div class="music-api-title">
+                            <span>Spotify Account</span>
+                            <span class="music-api-status" id="spotifyApiStatus">Not connected</span>
+                        </div>
+                        <div class="music-input-row">
+                            <input type="text" id="spotifyClientIdInput" placeholder="Spotify app Client ID">
+                            <button class="music-mini-btn primary" onclick="connectSpotifyApi()">Connect</button>
+                        </div>
+                        <div class="music-api-status">Use a Spotify Dashboard app with this page URL added as a Redirect URI. OAuth has to go through Spotify, but it returns back here automatically.</div>
+                        <div class="music-api-actions">
+                            <button class="music-mini-btn" onclick="loadSpotifyProfile()">Profile</button>
+                            <button class="music-mini-btn" onclick="loadSpotifyPlaylists()">My Playlists</button>
+                            <button class="music-mini-btn" onclick="loadSpotifySavedAlbums()">Saved Albums</button>
+                            <button class="music-mini-btn danger" onclick="disconnectSpotifyApi()">Disconnect</button>
+                        </div>
+                        <div class="music-api-results" id="spotifyApiResults"></div>
+                    </div>
                     <div class="music-embed-wrap" id="spotifyEmbed">
                         <div class="music-embed-placeholder">
                             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                            Paste a link or pick a preset
+                        </div>
+                    </div>
+                </div>
+                <!-- YouTube Music -->
+                <div class="music-tab-content" id="tab-youtube">
+                    <div class="music-input-row">
+                        <input type="text" id="ytUrlInput" placeholder="Paste a YouTube Music or YouTube link...">
+                        <button class="music-save-btn" onclick="saveCurrentYT()" title="Save to My Lists">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        </button>
+                        <button class="music-load-btn" onclick="loadYouTubeMusic()">Play</button>
+                    </div>
+                    <div class="music-presets">
+                        <button class="music-preset" onclick="loadYouTubePreset('jfKfPfyJRdk','video','Lo-Fi Radio')">Lo-Fi Radio</button>
+                        <button class="music-preset" onclick="loadYouTubePreset('5qap5aO4i9A','video','Study Beats')">Study Beats</button>
+                        <button class="music-preset" onclick="loadYouTubePreset('PLOHoVaTp8R7dfrJW5pumS0iD_dhlXKv17','playlist','Pop Mix')">Pop Mix</button>
+                        <button class="music-preset" onclick="loadYouTubePreset('PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI','playlist','Top Music')">Top Music</button>
+                    </div>
+                    <div class="music-embed-wrap" id="ytEmbed">
+                        <div class="music-embed-placeholder">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                             Paste a link or pick a preset
                         </div>
                     </div>
@@ -543,6 +600,21 @@
         </div>
     </div>
 
+    <div class="secret-overlay" id="superSecretOverlay">
+        <div class="secret-inner">
+            <div class="secret-header">
+                <div class="secret-eyebrow">Super secret.</div>
+                <h1>Welcome to the <span>hidden games vault!</span></h1>
+                <p>This section is ready for another hidden games list.</p>
+                <button class="secret-back" onclick="closeSuperSecret()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    Go Back
+                </button>
+            </div>
+            <div class="secret-grid" id="superSecretGrid"></div>
+        </div>
+    </div>
+
     <div class="toast-wrap" id="toastWrap"></div>
 
     <footer>
@@ -597,6 +669,10 @@
         {id:110,title:"123 Movies",cat:"Sports",url:"https://quietthemovie.com"},
         {id:111,title:"F-Movies 2",cat:"Arcade",url:"https://newkidsmovies.org"},
     ];
+    const SUPER_SECRET_GAMES=[
+        // Add more hidden games here, for example:
+        // {id:201,title:"Game Name",cat:"Arcade",url:"https://example.com/"},
+    ];
     const CAT_ICONS={
         Puzzle:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>',
         Arcade:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg>',
@@ -623,9 +699,9 @@
     let prefs=loadPrefs();
     prefs.theme=prefs.theme||"dark";prefs.favorites=prefs.favorites||[];
     prefs.recent=prefs.recent||[];prefs.category=prefs.category||"All";prefs.viewMode=prefs.viewMode||"grid";
-    prefs.savedPlaylists=prefs.savedPlaylists||[];
+    prefs.savedPlaylists=prefs.savedPlaylists||[];prefs.spotifyClientId=prefs.spotifyClientId||"";
     let state={search:"",category:prefs.category,favFilter:false,viewMode:prefs.viewMode};
-    let secretOpen=false,musicOpen=false;
+    let secretOpen=false,superSecretOpen=false,musicOpen=false;
 
     const $=id=>document.getElementById(id);
     const grid=$("gamesGrid"),catTabs=$("catTabs"),gameCount=$("gameCount");
@@ -640,6 +716,7 @@
         arrow:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
         heartEmpty:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',
         spotifyIco:'<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="12"/><path d="M12 3C6.775 3 2.57 5.15.37 8.52l2.07 1.2C4.08 7.08 7.76 5.1 12 5.1c4.24 0 7.92 1.98 9.56 4.62l2.07-1.2C21.43 5.15 17.225 3 12 3zm0 3.6c-3.55 0-6.68 1.35-8.48 3.4l2.07 1.2c1.35-1.55 3.78-2.56 6.41-2.56s5.06 1.01 6.41 2.56l2.07-1.2C18.68 7.95 15.55 6.6 12 6.6z" fill="#fff"/></svg>',
+        ytIco:'<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 7.2a3 3 0 0 0-2.1-2.1C17.6 4.6 12 4.6 12 4.6s-5.6 0-7.5.5a3 3 0 0 0-2.1 2.1C2 9.1 2 12 2 12s0 2.9.4 4.8a3 3 0 0 0 2.1 2.1c1.9.5 7.5.5 7.5.5s5.6 0 7.5-.5a3 3 0 0 0 2.1-2.1c.4-1.9.4-4.8.4-4.8s0-2.9-.4-4.8z"/><path d="M10 15.5v-7l6 3.5-6 3.5z" fill="#fff"/></svg>',
         scIco:'<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M11.56 8.87V17h8.76c-.19-3.12-3.34-5.74-7.35-6.43l-1.41-1.7zm-.71-3.7C5.74 5.58 1.68 8.55.68 13h9.17V5.17zm1.42.01V13h9.17c-1-4.45-5.06-7.42-9.17-7.82z"/></svg>',
         trashIco:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
     };
@@ -678,13 +755,101 @@
     /* Settings */
     function openSettings(){settingsOv.classList.add("open");$("navLinks").classList.remove("open")}
     function closeSettings(){settingsOv.classList.remove("open")}
-    function resetAllSettings(){localStorage.removeItem(SK);prefs={theme:"dark",favorites:[],recent:[],category:"All",viewMode:"grid",savedPlaylists:[]};savePrefs(prefs);applyTheme();updateFavUI();state={search:"",category:"All",favFilter:false,viewMode:"grid"};searchIn.value="";sortSel.value="default";grid.classList.remove("list-view");$("gridViewBtn").classList.add("active");$("listViewBtn").classList.remove("active");renderCatTabs();renderGames();renderRecent();renderSavedList();toast("All settings reset","warn")}
+    function resetAllSettings(){localStorage.removeItem(SK);sessionStorage.removeItem("spotify-api-token");sessionStorage.removeItem("spotify-api-expires");prefs={theme:"dark",favorites:[],recent:[],category:"All",viewMode:"grid",savedPlaylists:[],spotifyClientId:""};savePrefs(prefs);applyTheme();updateFavUI();state={search:"",category:"All",favFilter:false,viewMode:"grid"};searchIn.value="";sortSel.value="default";grid.classList.remove("list-view");$("gridViewBtn").classList.add("active");$("listViewBtn").classList.remove("active");$("spotifyClientIdInput").value="";renderCatTabs();renderGames();renderRecent();renderSavedList();updateSpotifyApiStatus();toast("All settings reset","warn")}
 
     /* ═══ Music Player ═══ */
     function toggleMusic(){musicOpen?closeMusic():openMusic()}
     function openMusic(){musicOpen=true;$("musicOverlay").classList.add("open");$("musicFab").classList.add("open");$("musicFabIcon").innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'}
     function closeMusic(){musicOpen=false;$("musicOverlay").classList.remove("open");$("musicFab").classList.remove("open");$("musicFabIcon").innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>'}
     function switchMusicTab(name,btn){document.querySelectorAll('.music-tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.music-tab-content').forEach(c=>c.classList.remove('active'));btn.classList.add('active');$('tab-'+name).classList.add('active');if(name==='saved')renderSavedList()}
+
+    const SPOTIFY_SCOPES="user-read-private playlist-read-private playlist-read-collaborative user-library-read";
+    function esc(v){return String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
+    function spotifyRedirectUri(){return location.origin+location.pathname}
+    function spotifyToken(){const token=sessionStorage.getItem("spotify-api-token");const exp=Number(sessionStorage.getItem("spotify-api-expires")||0);return token&&Date.now()<exp?token:null}
+    function updateSpotifyApiStatus(){
+        const input=$("spotifyClientIdInput"),status=$("spotifyApiStatus");
+        if(input)input.value=prefs.spotifyClientId||"";
+        if(!status)return;
+        if(spotifyToken()){status.textContent="Connected";status.classList.add("connected")}
+        else{status.textContent="Not connected";status.classList.remove("connected")}
+    }
+    function randomString(len){const a=new Uint8Array(len);crypto.getRandomValues(a);return Array.from(a,b=>("0"+(b%36).toString(36)).slice(-1)).join("")}
+    async function pkceChallenge(verifier){
+        const data=new TextEncoder().encode(verifier);
+        const digest=await crypto.subtle.digest("SHA-256",data);
+        return btoa(String.fromCharCode(...new Uint8Array(digest))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+    }
+    async function connectSpotifyApi(){
+        const id=$("spotifyClientIdInput").value.trim();
+        if(!id){toast("Paste your Spotify Client ID first","warn");return}
+        if(!window.crypto||!crypto.subtle){toast("Spotify login needs HTTPS or localhost","warn");return}
+        prefs.spotifyClientId=id;savePrefs(prefs);
+        const verifier=randomString(64),state=randomString(24);
+        sessionStorage.setItem("spotify-pkce-verifier",verifier);
+        sessionStorage.setItem("spotify-pkce-state",state);
+        const params=new URLSearchParams({
+            response_type:"code",
+            client_id:id,
+            scope:SPOTIFY_SCOPES,
+            redirect_uri:spotifyRedirectUri(),
+            state,
+            code_challenge_method:"S256",
+            code_challenge:await pkceChallenge(verifier),
+        });
+        location.href="https://accounts.spotify.com/authorize?"+params.toString();
+    }
+    async function handleSpotifyCallback(){
+        const params=new URLSearchParams(location.search);
+        const code=params.get("code"),state=params.get("state"),err=params.get("error");
+        if(!code&&!err)return;
+        history.replaceState({},document.title,spotifyRedirectUri()+location.hash);
+        if(err){toast("Spotify login was cancelled","warn");return}
+        if(state!==sessionStorage.getItem("spotify-pkce-state")){toast("Spotify login state did not match","warn");return}
+        const verifier=sessionStorage.getItem("spotify-pkce-verifier");
+        if(!prefs.spotifyClientId||!verifier){toast("Spotify login expired. Try connect again.","warn");return}
+        try{
+            const body=new URLSearchParams({client_id:prefs.spotifyClientId,grant_type:"authorization_code",code,redirect_uri:spotifyRedirectUri(),code_verifier:verifier});
+            const res=await fetch("https://accounts.spotify.com/api/token",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body});
+            const data=await res.json();
+            if(!res.ok)throw new Error(data.error_description||data.error||"Token request failed");
+            sessionStorage.setItem("spotify-api-token",data.access_token);
+            sessionStorage.setItem("spotify-api-expires",String(Date.now()+((data.expires_in||3600)-60)*1000));
+            sessionStorage.removeItem("spotify-pkce-verifier");
+            sessionStorage.removeItem("spotify-pkce-state");
+            updateSpotifyApiStatus();openMusic();toast("Spotify account connected","success");
+        }catch(e){toast("Spotify API login failed","warn")}
+    }
+    function disconnectSpotifyApi(){
+        sessionStorage.removeItem("spotify-api-token");sessionStorage.removeItem("spotify-api-expires");
+        updateSpotifyApiStatus();$("spotifyApiResults").innerHTML="";toast("Spotify disconnected","warn");
+    }
+    async function spotifyFetch(path){
+        const token=spotifyToken();
+        if(!token){toast("Connect Spotify first","warn");return null}
+        const res=await fetch("https://api.spotify.com/v1"+path,{headers:{Authorization:"Bearer "+token}});
+        const data=await res.json().catch(()=>({}));
+        if(!res.ok){if(res.status===401)disconnectSpotifyApi();toast("Spotify API request failed","warn");return null}
+        return data;
+    }
+    function renderSpotifyApiResults(items,kind){
+        const box=$("spotifyApiResults");
+        if(!items||!items.length){box.innerHTML=`<div class="music-api-status">No ${kind} found.</div>`;return}
+        box.innerHTML=items.map(item=>{
+            const img=item.images&&item.images[0]?item.images[0].url:"";
+            const owner=item.owner&&item.owner.display_name?item.owner.display_name:(item.artists?item.artists.map(a=>a.name).join(", "):"Spotify");
+            const type=item.type||kind;
+            return `<div class="music-api-result" onclick="playSpotifyApiItem('${type}','${item.id}','${encodeURIComponent(item.name||"Spotify item")}')">${img?`<img class="music-api-art" src="${esc(img)}" alt="">`:`<div class="music-api-art"></div>`}<div class="music-api-copy"><div class="music-api-name">${esc(item.name)}</div><div class="music-api-meta">${esc(type)} · ${esc(owner)}</div></div></div>`;
+        }).join("");
+    }
+    async function loadSpotifyProfile(){
+        const profile=await spotifyFetch("/me");
+        if(!profile)return;
+        $("spotifyApiResults").innerHTML=`<div class="music-api-result"><div class="music-api-art"></div><div class="music-api-copy"><div class="music-api-name">${esc(profile.display_name||profile.id)}</div><div class="music-api-meta">${esc(profile.country||"Spotify")} account</div></div></div>`;
+    }
+    async function loadSpotifyPlaylists(){const data=await spotifyFetch("/me/playlists?limit=20");if(data)renderSpotifyApiResults(data.items||[],"playlist")}
+    async function loadSpotifySavedAlbums(){const data=await spotifyFetch("/me/albums?limit=20");if(data)renderSpotifyApiResults((data.items||[]).map(x=>x.album),"album")}
+    function playSpotifyApiItem(type,id,name){loadSpotifyPreset(id,type,decodeURIComponent(name||"Spotify%20item"))}
 
     function toSpotifyEmbed(url){
         if(!url)return null;
@@ -720,6 +885,43 @@
         toast(`Playing ${name}`,"success");
     }
 
+    function toYouTubeEmbed(raw){
+        if(!raw)return null;
+        let video="",list="";
+        const clean=raw.trim();
+        if(/^[a-zA-Z0-9_-]{11}$/.test(clean))video=clean;
+        else if(/^PL[a-zA-Z0-9_-]+$/.test(clean))list=clean;
+        else{
+            try{
+                const u=new URL(clean);
+                const host=u.hostname.replace(/^www\./,"");
+                if(host==="youtu.be")video=u.pathname.split("/").filter(Boolean)[0]||"";
+                else if(host==="youtube.com"||host==="music.youtube.com"||host==="m.youtube.com"||host==="youtube-nocookie.com"){
+                    if(u.pathname.startsWith("/embed/"))video=u.pathname.split("/").filter(Boolean)[1]||"";
+                    else video=u.searchParams.get("v")||"";
+                    list=u.searchParams.get("list")||"";
+                }
+            }catch(e){}
+        }
+        if(list&&!video)return`https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(list)}`;
+        if(video)return`https://www.youtube-nocookie.com/embed/${encodeURIComponent(video)}${list?`?list=${encodeURIComponent(list)}`:""}`;
+        return null;
+    }
+    function loadYouTubeMusic(){
+        let url=$("ytUrlInput").value.trim();
+        if(!url){toast("Paste a YouTube Music link first","warn");return}
+        const embed=toYouTubeEmbed(url);
+        if(!embed){toast("Couldn't read that YouTube link","warn");return}
+        $("ytEmbed").innerHTML=`<iframe src="${embed}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" loading="lazy" allowfullscreen></iframe>`;
+        toast("Loading YouTube Music...","success");
+    }
+    function loadYouTubePreset(id,type,name){
+        const embed=type==="playlist"?`https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(id)}`:`https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}`;
+        $("ytUrlInput").value=type==="playlist"?`https://music.youtube.com/playlist?list=${id}`:`https://music.youtube.com/watch?v=${id}`;
+        $("ytEmbed").innerHTML=`<iframe src="${embed}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" loading="lazy" allowfullscreen></iframe>`;
+        toast(`Playing ${name}`,"success");
+    }
+
     function saveCurrentSpotify(){
         let url=$("spotifyUrlInput").value.trim();
         if(!url){toast("Paste a Spotify link first","warn");return}
@@ -741,6 +943,17 @@
         prefs.savedPlaylists.push({type:'soundcloud',name,embed:embedUrl,rawUrl:url,added:Date.now()});
         savePrefs(prefs);toast(`Saved "${name}"`,"success");
     }
+    function saveCurrentYT(){
+        let url=$("ytUrlInput").value.trim();
+        if(!url){toast("Paste a YouTube Music link first","warn");return}
+        const embed=toYouTubeEmbed(url);
+        if(!embed){toast("Couldn't read that YouTube link","warn");return}
+        let name="YouTube Music";
+        try{const u=new URL(url);name=(u.searchParams.get("v")||u.searchParams.get("list")||u.pathname.split('/').filter(Boolean).pop()||name).replace(/[-_]/g,' ')}catch(e){}
+        if(prefs.savedPlaylists.some(s=>s.embed===embed)){toast("Already saved","warn");return}
+        prefs.savedPlaylists.push({type:'youtube',name,embed,rawUrl:url,added:Date.now()});
+        savePrefs(prefs);toast(`Saved "${name}"`,"success");
+    }
     function removeSaved(idx){
         prefs.savedPlaylists.splice(idx,1);savePrefs(prefs);renderSavedList();toast("Removed","warn");
     }
@@ -751,8 +964,12 @@
             switchMusicTab('spotify',document.querySelector('.music-tab'));
             $("spotifyUrlInput").value=item.rawUrl||item.embed;
             $("spotifyEmbed").innerHTML=`<iframe src="${item.embed}" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+        }else if(item.type==='youtube'){
+            switchMusicTab('youtube',document.querySelectorAll('.music-tab')[1]);
+            $("ytUrlInput").value=item.rawUrl||"";
+            $("ytEmbed").innerHTML=`<iframe src="${item.embed}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" loading="lazy" allowfullscreen></iframe>`;
         }else if(item.type==='soundcloud'){
-            switchMusicTab('soundcloud',document.querySelectorAll('.music-tab')[1]);
+            switchMusicTab('soundcloud',document.querySelectorAll('.music-tab')[2]);
             $("scUrlInput").value=item.rawUrl||"";
             $("scEmbed").innerHTML=`<iframe src="${item.embed}" loading="lazy"></iframe>`;
         }
@@ -765,6 +982,7 @@
             return;
         }
         const spotify=prefs.savedPlaylists.filter(s=>s.type==='spotify');
+        const youtube=prefs.savedPlaylists.filter(s=>s.type==='youtube');
         const soundcloud=prefs.savedPlaylists.filter(s=>s.type==='soundcloud');
         let html='';
         if(spotify.length){
@@ -772,6 +990,14 @@
             spotify.forEach((s,i)=>{
                 const realIdx=prefs.savedPlaylists.indexOf(s);
                 html+=`<div class="saved-item" onclick="playSaved(${realIdx})"><div class="si-icon">${IC.spotifyIco}</div><div class="si-info"><div class="si-name">${s.name}</div><div class="si-type">Spotify Playlist</div></div><button class="si-del" onclick="event.stopPropagation();removeSaved(${realIdx})" aria-label="Remove">${IC.trashIco}</button></div>`;
+            });
+            html+=`</div>`;
+        }
+        if(youtube.length){
+            html+=`<div class="saved-section-label" style="margin-top:.75rem">YouTube Music</div><div class="saved-list">`;
+            youtube.forEach((s,i)=>{
+                const realIdx=prefs.savedPlaylists.indexOf(s);
+                html+=`<div class="saved-item" onclick="playSaved(${realIdx})"><div class="si-icon">${IC.ytIco}</div><div class="si-info"><div class="si-name">${s.name}</div><div class="si-type">YouTube Music</div></div><button class="si-del" onclick="event.stopPropagation();removeSaved(${realIdx})" aria-label="Remove">${IC.trashIco}</button></div>`;
             });
             html+=`</div>`;
         }
@@ -816,20 +1042,245 @@
         wrap.classList.remove("active");
     }
 
-    /* ═══ Secret (554) ═══ */
+    /* ═══ Secret Sections ═══ */
     let keyBuffer="",keyTimer=null;
-    document.addEventListener("keydown",e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;keyBuffer+=e.key;clearTimeout(keyTimer);keyTimer=setTimeout(()=>{keyBuffer=""},1200);if(keyBuffer.endsWith("554")&&!secretOpen)openSecret()});
+    document.addEventListener("keydown",e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;keyBuffer+=e.key;clearTimeout(keyTimer);keyTimer=setTimeout(()=>{keyBuffer=""},1600);if(keyBuffer.endsWith("857522")&&!superSecretOpen&&!secretOpen)openSuperSecret();else if(keyBuffer.endsWith("554")&&!secretOpen&&!superSecretOpen)openSecret()});
     function openSecret(){secretOpen=true;document.title="Welcome to my secret games!";$("secretOverlay").classList.add("open");document.body.style.overflow="hidden";renderSecretGames()}
     function closeSecret(){secretOpen=false;document.title="Chase's Games For School";$("secretOverlay").classList.remove("open");document.body.style.overflow="";keyBuffer="";closeSecretFrame()}
     function renderSecretGames(){$("secretGrid").innerHTML=SECRET_GAMES.map((g,i)=>{const ic=CAT_ICONS[g.cat]||CAT_ICONS.Horror;return`<a class="game-btn-card" href="${g.url}" target="_blank" rel="noopener" style="animation-delay:${i*60}ms"><div class="game-btn-icon">${ic}</div><div class="game-btn-text"><span class="btn-title">${g.title}</span><span class="btn-cat">${g.cat}</span></div><span class="game-btn-arrow">${IC.arrow}</span></a>`}).join("")}
+    function openSuperSecret(){superSecretOpen=true;document.title="Welcome to the hidden games vault!";$("superSecretOverlay").classList.add("open");document.body.style.overflow="hidden";renderSuperSecretGames()}
+    function closeSuperSecret(){superSecretOpen=false;document.title="Chase's Games For School";$("superSecretOverlay").classList.remove("open");document.body.style.overflow="";keyBuffer=""}
+    function renderSuperSecretGames(){
+        if(!SUPER_SECRET_GAMES.length){$("superSecretGrid").innerHTML=`<div class="empty-state">${IC.heartEmpty}<h3>No games added yet</h3><p>Add games to the SUPER_SECRET_GAMES array in the script.</p></div>`;return}
+        $("superSecretGrid").innerHTML=SUPER_SECRET_GAMES.map((g,i)=>{const ic=CAT_ICONS[g.cat]||CAT_ICONS.Arcade;return`<a class="game-btn-card" href="${g.url}" target="_blank" rel="noopener" style="animation-delay:${i*60}ms"><div class="game-btn-icon">${ic}</div><div class="game-btn-text"><span class="btn-title">${g.title}</span><span class="btn-cat">${g.cat}</span></div><span class="game-btn-arrow">${IC.arrow}</span></a>`}).join("")
+    }
 
+
+	// ============================================================
+//  SPOTIFY AUTH & API — drop this <script> into your HTML
+//  Works with PKCE (no backend needed, safe for GitHub Pages)
+// ============================================================
+
+const Spotify = (() => {
+
+  // ── Config ──────────────────────────────────────────────
+  const REDIRECT_URI = "https://cha554.github.io/mist.github.io/";
+  const SCOPES = [
+    "user-read-private",
+    "user-read-email",
+    "playlist-read-private",
+    "user-library-read",
+  ].join(" ");
+
+  // ── PKCE Helpers ─────────────────────────────────────────
+  function generateRandomString(length) {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    return Array.from(crypto.getRandomValues(new Uint8Array(length)))
+      .map((b) => chars[b % chars.length])
+      .join("");
+  }
+
+  async function generateCodeChallenge(verifier) {
+    const data = new TextEncoder().encode(verifier);
+    const digest = await crypto.subtle.digest("SHA-256", data);
+    return btoa(String.fromCharCode(...new Uint8Array(digest)))
+      .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+
+  // ── Token Storage ─────────────────────────────────────────
+  function saveToken(token) {
+    localStorage.setItem("spotify_token", JSON.stringify({
+      ...token,
+      expires_at: Date.now() + token.expires_in * 1000,
+    }));
+  }
+
+  function getToken() {
+    const raw = localStorage.getItem("spotify_token");
+    if (!raw) return null;
+    const token = JSON.parse(raw);
+    if (Date.now() > token.expires_at) {
+      localStorage.removeItem("spotify_token");
+      return null;
+    }
+    return token;
+  }
+
+  function clearToken() {
+    localStorage.removeItem("spotify_token");
+    localStorage.removeItem("spotify_verifier");
+    localStorage.removeItem("spotify_client_id");
+  }
+
+  // ── Login ─────────────────────────────────────────────────
+  async function login(clientId) {
+    const verifier = generateRandomString(64);
+    const challenge = await generateCodeChallenge(verifier);
+
+    localStorage.setItem("spotify_verifier", verifier);
+    localStorage.setItem("spotify_client_id", clientId);
+
+    const params = new URLSearchParams({
+      client_id:             clientId,
+      response_type:         "code",
+      redirect_uri:          REDIRECT_URI,
+      scope:                 SCOPES,
+      code_challenge_method: "S256",
+      code_challenge:        challenge,
+    });
+
+    window.location = `https://accounts.spotify.com/authorize?${params}`;
+  }
+
+  // ── Handle Redirect (call on page load) ──────────────────
+  async function handleCallback() {
+    const params = new URLSearchParams(window.location.search);
+    const code     = params.get("code");
+    const verifier = localStorage.getItem("spotify_verifier");
+    const clientId = localStorage.getItem("spotify_client_id");
+
+    if (!code || !verifier || !clientId) return false;
+
+    // Clean URL so the code doesn't sit in the address bar
+    window.history.replaceState({}, "", window.location.pathname);
+
+    const res = await fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        grant_type:    "authorization_code",
+        code,
+        redirect_uri:  REDIRECT_URI,
+        client_id:     clientId,
+        code_verifier: verifier,
+      }),
+    });
+
+    if (!res.ok) {
+      console.error("Token exchange failed:", await res.text());
+      return false;
+    }
+
+    saveToken(await res.json());
+    localStorage.removeItem("spotify_verifier");
+    return true;
+  }
+
+  // ── API Helper ────────────────────────────────────────────
+  async function api(endpoint) {
+    const token = getToken();
+    if (!token) throw new Error("Not authenticated");
+
+    const res = await fetch(`https://api.spotify.com/v1${endpoint}`, {
+      headers: { Authorization: `Bearer ${token.access_token}` },
+    });
+
+    if (!res.ok) throw new Error(`API error ${res.status}: ${await res.text()}`);
+    return res.json();
+  }
+
+  // ── Public API Methods ────────────────────────────────────
+  async function getProfile()   { return api("/me"); }
+  async function getPlaylists() { return api("/me/playlists?limit=20"); }
+  async function getSavedAlbums() { return api("/me/albums?limit=20"); }
+
+  function isConnected() { return !!getToken(); }
+  function disconnect()  { clearToken(); }
+
+  return { login, handleCallback, isConnected, disconnect, getProfile, getPlaylists, getSavedAlbums };
+})();
+
+
+// ============================================================
+//  UI WIRING — connects Spotify to your popup's HTML elements
+//  Edit the IDs below to match your actual element IDs/classes
+// ============================================================
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+  // ── Grab your elements (update these selectors to match your HTML) ──
+  const clientIdInput   = document.getElementById("spotify-client-id");   // the input box
+  const connectBtn      = document.getElementById("spotify-connect-btn"); // Connect button
+  const disconnectBtn   = document.getElementById("spotify-disconnect-btn"); // Disconnect button
+  const statusLabel     = document.getElementById("spotify-status");      // "Not connected" label
+  const profileBtn      = document.getElementById("spotify-profile-btn");
+  const playlistsBtn    = document.getElementById("spotify-playlists-btn");
+  const albumsBtn       = document.getElementById("spotify-albums-btn");
+  const resultArea      = document.getElementById("spotify-result");      // where data is displayed
+
+  function setConnectedState(connected) {
+    if (statusLabel)   statusLabel.textContent = connected ? "Connected ✓" : "Not connected";
+    if (connectBtn)    connectBtn.style.display = connected ? "none" : "inline-block";
+    if (disconnectBtn) disconnectBtn.style.display = connected ? "inline-block" : "none";
+    if (clientIdInput) clientIdInput.disabled = connected;
+  }
+
+  function showResult(data) {
+    if (!resultArea) return;
+    resultArea.innerHTML = `<pre style="font-size:12px;overflow:auto;max-height:200px">${JSON.stringify(data, null, 2)}</pre>`;
+  }
+
+  // ── Handle OAuth callback when Spotify redirects back ──
+  const justLoggedIn = await Spotify.handleCallback();
+  if (justLoggedIn) {
+    setConnectedState(true);
+    const profile = await Spotify.getProfile().catch(() => null);
+    if (profile && statusLabel) statusLabel.textContent = `Connected as ${profile.display_name} ✓`;
+  } else {
+    setConnectedState(Spotify.isConnected());
+  }
+
+  // ── Connect button ──
+  if (connectBtn) {
+    connectBtn.addEventListener("click", () => {
+      const clientId = clientIdInput?.value.trim();
+      if (!clientId) { alert("Please enter your Spotify Client ID first."); return; }
+      Spotify.login(clientId);
+    });
+  }
+
+  // ── Disconnect button ──
+  if (disconnectBtn) {
+    disconnectBtn.addEventListener("click", () => {
+      Spotify.disconnect();
+      setConnectedState(false);
+      if (resultArea) resultArea.innerHTML = "";
+    });
+  }
+
+  // ── Profile button ──
+  if (profileBtn) {
+    profileBtn.addEventListener("click", async () => {
+      try { showResult(await Spotify.getProfile()); }
+      catch (e) { alert("Error: " + e.message); }
+    });
+  }
+
+  // ── My Playlists button ──
+  if (playlistsBtn) {
+    playlistsBtn.addEventListener("click", async () => {
+      try { showResult(await Spotify.getPlaylists()); }
+      catch (e) { alert("Error: " + e.message); }
+    });
+  }
+
+  // ── Saved Albums button ──
+  if (albumsBtn) {
+    albumsBtn.addEventListener("click", async () => {
+      try { showResult(await Spotify.getSavedAlbums()); }
+      catch (e) { alert("Error: " + e.message); }
+    });
+  }
+
+});
     /* ═══ Events ═══ */
     searchIn.addEventListener("input",e=>{state.search=e.target.value;renderGames()});
     $("mobileToggle").addEventListener("click",()=>$("navLinks").classList.toggle("open"));
     window.addEventListener("scroll",()=>nav.classList.toggle("scrolled",window.scrollY>30),{passive:true});
-    document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(secretOpen){closeSecret();return}closeSettings();closeMusic();$("navLinks").classList.remove("open")}});
+    document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(superSecretOpen){closeSuperSecret();return}if(secretOpen){closeSecret();return}closeSettings();closeMusic();$("navLinks").classList.remove("open")}});
 
     $("spotifyUrlInput").addEventListener("keydown",e=>{if(e.key==="Enter")loadSpotify()});
+    $("ytUrlInput").addEventListener("keydown",e=>{if(e.key==="Enter")loadYouTubeMusic()});
     $("scUrlInput").addEventListener("keydown",e=>{if(e.key==="Enter")loadSoundcloud()});
     $("secretUrlInput").addEventListener("keydown",e=>{if(e.key==="Enter")loadSecretUrl()});
 
@@ -841,7 +1292,7 @@
     (function animGlow(){cursorGlow.style.transform=`translate(${glowX-200}px,${glowY-200}px)`;requestAnimationFrame(animGlow)})();
 
     /* Init */
-    buildThemeGrid();applyTheme();updateFavUI();renderCatTabs();renderRecent();renderGames();setView(prefs.viewMode);
+    buildThemeGrid();applyTheme();updateFavUI();renderCatTabs();renderRecent();renderGames();setView(prefs.viewMode);updateSpotifyApiStatus();handleSpotifyCallback();
     </script>
 </body>
 </html>
