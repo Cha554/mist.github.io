@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chase's Games For School</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Fraunces:wght@500;600;700&family=Comfortaa:wght@500;600;700&family=Archivo:wght@500;700;800&family=Orbitron:wght@500;700;800&family=Quicksand:wght@500;600;700&family=Poppins:wght@500;600;700&family=Caveat:wght@600;700&family=Rajdhani:wght@500;600;700&family=Yeseva+One&family=Outfit:wght@500;600;700&family=Oswald:wght@500;600;700&family=Anton&display=swap" rel="stylesheet">
     <script>
         (function(){ try { var t=localStorage.getItem('chase-games-prefs'); if(t){ var p=JSON.parse(t); if(p.theme) document.documentElement.setAttribute('data-theme',p.theme); }} catch(e){} })();
     </script>
@@ -49,7 +49,77 @@
         [data-theme="volcanic"]{--bg:#0c0804;--bg-el:#160e08;--bg-card:#1e140c;--fg:#f8dcc8;--fg2:#a87048;--fg3:#5c3820;--accent:#ea580c;--accent-h:#f97316;--accent-d:#7a2c06;--accent-g:rgba(234,88,12,.12);--accent-gs:rgba(234,88,12,.25);--warm:#fbbf24;--warm-g:rgba(251,191,36,.12);--border:rgba(234,88,12,.08);--border-h:rgba(234,88,12,.22);--shadow:rgba(0,0,0,.5);--glass:rgba(12,8,4,.7);--logo-from:#ea580c;--logo-to:#fbbf24;--hero-from:#ea580c;--hero-to:#fbbf24;--glow1:rgba(234,88,12,.07);--glow2:rgba(251,191,36,.05);--geo-color:#ea580c;--geo-alt:#fbbf24}
         [data-theme="volcanic"] .game-btn-card:hover{box-shadow:0 16px 40px var(--shadow),0 0 20px rgba(234,88,12,.18),0 0 50px rgba(251,191,36,.06)}
         [data-theme="volcanic"] .cat-tab.active{box-shadow:0 0 14px rgba(234,88,12,.2)}
+        [data-theme="mocha"] .game-btn-card{font-family:'Fraunces',serif}
+        [data-theme="mocha"] .game-btn-text .btn-cat{font-family:'Fraunces',serif}
+        [data-theme="mocha"] .hero h1{font-family:'Fraunces',serif}
+        [data-theme="mocha"] .logo{font-family:'Fraunces',serif}
+        [data-theme="mocha"] .cat-tab{font-family:'Fraunces',serif}
 
+        [data-theme="forest"] .game-btn-card{font-family:'Comfortaa',sans-serif}
+        [data-theme="forest"] .game-btn-text .btn-cat{font-family:'Comfortaa',sans-serif}
+        [data-theme="forest"] .hero h1{font-family:'Comfortaa',sans-serif}
+        [data-theme="forest"] .logo{font-family:'Comfortaa',sans-serif}
+        [data-theme="forest"] .cat-tab{font-family:'Comfortaa',sans-serif}
+
+        [data-theme="b&w"] .game-btn-card{font-family:'Archivo',sans-serif;font-weight:700}
+        [data-theme="b&w"] .game-btn-text .btn-cat{font-family:'Archivo',sans-serif}
+        [data-theme="b&w"] .hero h1{font-family:'Archivo',sans-serif;font-weight:800}
+        [data-theme="b&w"] .logo{font-family:'Archivo',sans-serif;font-weight:800}
+        [data-theme="b&w"] .cat-tab{font-family:'Archivo',sans-serif}
+
+        [data-theme="spectral"] .game-btn-card{font-family:'Orbitron',sans-serif}
+        [data-theme="spectral"] .game-btn-text .btn-cat{font-family:'Orbitron',sans-serif}
+        [data-theme="spectral"] .hero h1{font-family:'Orbitron',sans-serif}
+        [data-theme="spectral"] .logo{font-family:'Orbitron',sans-serif}
+        [data-theme="spectral"] .cat-tab{font-family:'Orbitron',sans-serif}
+
+        [data-theme="ocean"] .game-btn-card{font-family:'Quicksand',sans-serif;font-weight:600}
+        [data-theme="ocean"] .game-btn-text .btn-cat{font-family:'Quicksand',sans-serif}
+        [data-theme="ocean"] .hero h1{font-family:'Quicksand',sans-serif;font-weight:700}
+        [data-theme="ocean"] .logo{font-family:'Quicksand',sans-serif;font-weight:700}
+        [data-theme="ocean"] .cat-tab{font-family:'Quicksand',sans-serif}
+
+        [data-theme="sunset"] .game-btn-card{font-family:'Poppins',sans-serif}
+        [data-theme="sunset"] .game-btn-text .btn-cat{font-family:'Poppins',sans-serif}
+        [data-theme="sunset"] .hero h1{font-family:'Poppins',sans-serif}
+        [data-theme="sunset"] .logo{font-family:'Poppins',sans-serif}
+        [data-theme="sunset"] .cat-tab{font-family:'Poppins',sans-serif}
+
+        [data-theme="cherry"] .game-btn-card{font-family:'Caveat',cursive;font-weight:700;font-size:1.15rem}
+        [data-theme="cherry"] .game-btn-text .btn-cat{font-family:'Caveat',cursive;font-size:.85rem;letter-spacing:.03em}
+        [data-theme="cherry"] .hero h1{font-family:'Caveat',cursive;font-weight:700}
+        [data-theme="cherry"] .logo{font-family:'Caveat',cursive;font-weight:700;font-size:1.5rem}
+        [data-theme="cherry"] .cat-tab{font-family:'Caveat',cursive;font-weight:600;font-size:1rem}
+
+        [data-theme="cyber"] .game-btn-card{font-family:'Rajdhani',sans-serif;font-weight:600}
+        [data-theme="cyber"] .game-btn-text .btn-cat{font-family:'Rajdhani',sans-serif}
+        [data-theme="cyber"] .hero h1{font-family:'Rajdhani',sans-serif;font-weight:700}
+        [data-theme="cyber"] .logo{font-family:'Rajdhani',sans-serif;font-weight:700}
+        [data-theme="cyber"] .cat-tab{font-family:'Rajdhani',sans-serif;font-weight:600}
+
+        [data-theme="desert"] .game-btn-card{font-family:'Yeseva One',serif}
+        [data-theme="desert"] .game-btn-text .btn-cat{font-family:'Yeseva One',serif}
+        [data-theme="desert"] .hero h1{font-family:'Yeseva One',serif}
+        [data-theme="desert"] .logo{font-family:'Yeseva One',serif}
+        [data-theme="desert"] .cat-tab{font-family:'Yeseva One',serif}
+
+        [data-theme="arctic"] .game-btn-card{font-family:'Outfit',sans-serif}
+        [data-theme="arctic"] .game-btn-text .btn-cat{font-family:'Outfit',sans-serif}
+        [data-theme="arctic"] .hero h1{font-family:'Outfit',sans-serif}
+        [data-theme="arctic"] .logo{font-family:'Outfit',sans-serif}
+        [data-theme="arctic"] .cat-tab{font-family:'Outfit',sans-serif}
+
+        [data-theme="crimson"] .game-btn-card{font-family:'Oswald',sans-serif;font-weight:500}
+        [data-theme="crimson"] .game-btn-text .btn-cat{font-family:'Oswald',sans-serif}
+        [data-theme="crimson"] .hero h1{font-family:'Oswald',sans-serif;font-weight:600}
+        [data-theme="crimson"] .logo{font-family:'Oswald',sans-serif;font-weight:600}
+        [data-theme="crimson"] .cat-tab{font-family:'Oswald',sans-serif}
+
+        [data-theme="volcanic"] .game-btn-card{font-family:'Anton',sans-serif;font-weight:400;letter-spacing:.01em}
+        [data-theme="volcanic"] .game-btn-text .btn-cat{font-family:'Anton',sans-serif;letter-spacing:.03em}
+        [data-theme="volcanic"] .hero h1{font-family:'Anton',sans-serif;font-weight:400}
+        [data-theme="volcanic"] .logo{font-family:'Anton',sans-serif;font-weight:400}
+        [data-theme="volcanic"] .cat-tab{font-family:'Anton',sans-serif}
         ::selection{background:var(--accent);color:#fff}
         html{scroll-behavior:smooth}
         body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--fg);line-height:1.6;overflow-x:hidden;transition:background .5s,color .5s;-webkit-font-smoothing:antialiased}
@@ -382,8 +452,8 @@
             </span>
         </div>
         <div class="hero-stats">
-            <span><span class="stat-dot"></span>16 Games</span>
-            <span><span class="stat-dot" style="background:var(--warm)"></span>4 Categories</span>
+            <span><span class="stat-dot"></span>37 Games</span>
+            <span><span class="stat-dot" style="background:var(--warm)"></span>7 Categories</span>
             <span><span class="stat-dot"></span>Instant Play</span>
         </div>
     </section>
@@ -635,8 +705,8 @@
         {id:2,title:"Lucide Pr0xy",cat:"Pr0xy",url:"https://cdn.jsdelivr.net/gh/lucideproxy/svg@latest/logo.svg#/"},
         {id:3,title:"Snow Rider 3D",cat:"Action",url:"https://jigar1234nob.github.io/snowrider3d/"},
         {id:4,title:"Slow Roads",cat:"Arcade",url:"https://the26pershing.github.io/slow-roads/"},
-        {id:5,title:"BLANK",cat:"Pr0xy",url:"https://monoxide.alex.rf.gd/"},
-        {id:6,title:"BLANK",cat:"Arcade",url:"https://sites.google.com/view/xeno-pro/home?authuser=0"},
+        {id:5,title:"Tungy Pr0xy",cat:"Pr0xy",url:"https://tungy.s3.amazonaws.com/index.html"},
+        {id:6,title:"Truffled Pr0xy",cat:"Pr0xy",url:"https://shar.centrodiagnosticogenetico.com/"},
         {id:7,title:"Slope",cat:"Action",url:"https://alpha-jr1890.github.io/Slope/slope.html"},
         {id:8,title:"Cookie Clicker",cat:"Simulator",url:"https://loafyen.github.io/Classgames/games/cookieclicker/index.html"},
         {id:9,title:"N-Gon",cat:"Puzzle",url:"https://loafyen.github.io/Classgames/games/n-gon/index.html"},
@@ -663,12 +733,16 @@
 		{id:30,title:"Card Games",cat:"Arcade",url:"https://cha554.github.io/Blackjack.github.io/"},
 		{id:31,title:"Snowball.io",cat:"Action",url:"https://sites.google.com/view/xeno-pro/gmes/snowball-io?authuser=1"},
 		{id:32,title:"Flow [code 67*41]",cat:"Pr0xy",url:"https://exoco.base44.app/"},
+		{id:33,title:"Random Game Hub",cat:"Pr0xy",url:"https://ilovevoidnetwork.seanbrogan.xyz/study/spanish-li/unit-1-ZjQzMzQxOTBnLmVqdzdDdHVKTURhSg"},
+		{id:34,title:"Z's Paradise",cat:"Pr0xy",url:"https://zsparadise.com/"},
+		{id:35,title:"HoneyComb [code 1111]",cat:"Pr0xy",url:"https://freeonlinecalculator.pages.dev/"},
+		{id:37,title:"Opium Pr0xy",cat:"Pr0xy",url:"https://s3.amazonaws.com/cleverlearning/index.html"},
+		{id:38,title:"Arctic [TEST]",cat:"Pr0xy",url:"https://storage.googleapis.com/math-homework/index.html"},
     ];
     const SECRET_GAMES=[
-        {id:101,title:"Xeno-Pro Working",cat:"Pr0xy",url:"https://sites.google.com/view/xeno-pro/gmes/drive-mad?authuser=0"},
-        //{id:102,title:"Flow [code 67*41]",cat:"Arcade",url:"https://exoco.base44.app/"},
-        {id:102,title:"MacVG",cat:"Arcade",url:"https://mfd00mfarm.github.io/macvg/"},
-        //{id:104,title:"BLANK",cat:"Arcade",url:"https://endis.rest/"},
+        {id:101,title:"Xeno-Pro Working?",cat:"Pr0xy",url:"https://sites.google.com/view/xeno-pro/gmes/drive-mad?authuser=0"},
+        {id:102,title:"MacVG [Not Working]",cat:"Arcade",url:"https://mfd00mfarm.github.io/macvg/"},
+        //{id:103,title:"BLANK",cat:"Arcade",url:"https://storage.googleapis.com/math-homework/index.html"},
         //{id:105,title:"BLANK",cat:"Horror",url:"www.wyywsucr.94.16.31.161.nip.io"},
         //{id:106,title:"BLANK",cat:"Horror",url:"https://dandiipoopii.wikidelia.net/#sWc0uOeIWyO2uVguduf/m3jwr2vuq9O8WwRG"},
         //{id:107,title:"BLANK",cat:"Sports",url:"https://velara.my/"},
